@@ -17,6 +17,7 @@ import { WorkEntry } from '../../work-entries/entities/work-entry.entity';
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
+  OWNER = 'owner',
 }
 
 @Entity('users')

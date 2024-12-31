@@ -11,6 +11,8 @@ import { CarsModule } from './cars/cars.module';
 import { RoutesModule } from './routes/routes.module';
 import { EmailModule } from './email/email.module';
 import { WorkEntriesModule } from './work-entries/work-entries.module';
+import { FilesModule } from './files/files.module';
+import { File } from './files/entities/file.entity';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { WorkEntriesModule } from './work-entries/work-entries.module';
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: configService.get<string>('DB_NAME', 'db.sqlite'),
-        entities: [User, Car, Route, WorkEntry],
+        entities: [User, Car, Route, WorkEntry, File],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -31,6 +33,7 @@ import { WorkEntriesModule } from './work-entries/work-entries.module';
     RoutesModule,
     EmailModule,
     WorkEntriesModule,
+    FilesModule,
   ],
 })
 export class AppModule {}

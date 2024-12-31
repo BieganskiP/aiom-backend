@@ -31,7 +31,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
   findAll() {
     return this.usersService.findAll();
   }
@@ -52,25 +52,26 @@ export class UsersController {
 
   // Admin update - full access
   @Patch(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
 
   @Post('make-admin')
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   async makeAdmin(@Body() { email }: { email: string }) {
     return this.usersService.makeAdmin(email);
   }
 
   @Post(':id/toggle-active')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
   async toggleActive(
     @Param('id') id: string,
     @Body() toggleActiveDto: ToggleActiveDto,
@@ -106,7 +107,7 @@ export class UsersController {
   }
 
   @Patch(':id/paid-per-stop')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
   updatePaidPerStop(
     @Param('id') id: string,
     @Body() updatePaidPerStopDto: UpdatePaidPerStopDto,

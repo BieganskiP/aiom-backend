@@ -35,12 +35,12 @@ export class AuthController {
   ) {
     const result = await this.authService.signup(createUserDto);
 
-    // Set HTTP-only cookie
+    // Set HTTP-only cookie with very long expiration
     response.cookie('jwt', result.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 1000 * 60 * 60 * 24 * 365 * 100, // 100 years in milliseconds
     });
 
     return {
@@ -67,12 +67,12 @@ export class AuthController {
     const payload = { sub: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
 
-    // Set HTTP-only cookie
+    // Set HTTP-only cookie with very long expiration
     response.cookie('jwt', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000 * 365, // 1 year
+      maxAge: 1000 * 60 * 60 * 24 * 365 * 100, // 100 years in milliseconds
     });
 
     return {
@@ -132,12 +132,12 @@ export class AuthController {
       completeRegistrationDto,
     );
 
-    // Set HTTP-only cookie
+    // Set HTTP-only cookie with very long expiration
     response.cookie('jwt', result.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 1000 * 60 * 60 * 24 * 365 * 100, // 100 years in milliseconds
     });
 
     return {

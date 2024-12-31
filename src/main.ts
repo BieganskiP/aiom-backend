@@ -13,11 +13,18 @@ async function bootstrap() {
     }),
   );
 
+  // Get the environment
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+
+  // Configure CORS
   app.enableCors({
-    origin: [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
-      process.env.MOBILE_APP_URL || '*',
-    ],
+    origin: isDevelopment
+      ? [process.env.FRONTEND_URL || 'http://localhost:3000', '*']
+      : [
+          process.env.FRONTEND_URL || 'https://your-frontend-domain.com',
+          process.env.MOBILE_APP_URL || '*',
+          /\.railway\.app$/, // Allow all railway.app subdomains
+        ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -33,6 +40,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
 
-  await app.listen(process.env.PORT || 3000);
+  // Use PORT from environment variables (Railway sets this automatically)
+  const port = process.env.PORT || 3001;
+  await app.listen(port);
+  console.log(`Application is running on port ${port}`);
 }
 bootstrap();

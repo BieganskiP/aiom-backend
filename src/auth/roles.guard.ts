@@ -16,7 +16,34 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const { user } = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    // If user is OWNER, they have admin privileges but can't modify ADMIN accounts
+    if (user.role === UserRole.OWNER) {
+      const targetUserId = request.params.id;
+      const method = request.method;
+      const path = request.route.path;
+
+      // If this is a user modification endpoint
+      if (
+        targetUserId &&
+        ['PATCH', 'DELETE'].includes(method) &&
+        path.includes('/users/')
+      ) {
+        // Get the target user from request body for role checks
+        const targetUser = request.body;
+
+        // Prevent OWNER from modifying ADMIN accounts
+        if (targetUser.role === UserRole.ADMIN) {
+          return false;
+        }
+      }
+
+      // For all other cases, OWNER has the same privileges as ADMIN
+      return requiredRoles.includes(UserRole.ADMIN);
+    }
+
     return requiredRoles.includes(user.role);
   }
 }
