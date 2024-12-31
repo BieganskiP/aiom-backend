@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { File, FileType } from './entities/file.entity';
@@ -83,7 +79,7 @@ export class FilesService {
     return file;
   }
 
-  async remove(id: string, userId: string): Promise<void> {
+  async remove(id: string): Promise<void> {
     const file = await this.findOne(id);
 
     try {
@@ -103,6 +99,7 @@ export class FilesService {
       const buffer = await fs.readFile(file.path);
       return { file, stream: buffer };
     } catch (error) {
+      console.error('Error reading file:', error);
       throw new NotFoundException('File not found on disk');
     }
   }
