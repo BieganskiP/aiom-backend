@@ -24,8 +24,8 @@ import { File } from './files/entities/file.entity';
         return {
           type: 'postgres',
           url: isDevelopment
-            ? configService.get<string>('DATABASE_PUBLIC_URL')
-            : configService.get<string>('DATABASE_URL'),
+            ? configService.get<string>('DATABASE_URL')
+            : configService.get<string>('DATABASE_PUBLIC_URL'),
           entities: [User, Car, Route, WorkEntry, File],
           synchronize: true,
           ssl: {
