@@ -7,7 +7,6 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
-  ManyToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Car } from '../../cars/entities/car.entity';
