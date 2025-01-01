@@ -19,12 +19,20 @@ import { File } from './files/entities/file.entity';
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'sqlite',
-        database: configService.get<string>('DB_NAME', 'db.sqlite'),
-        entities: [User, Car, Route, WorkEntry, File],
-        synchronize: true,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isDevelopment = process.env.NODE_ENV !== 'production';
+        return {
+          type: 'postgres',
+          url: isDevelopment
+            ? configService.get<string>('DATABASE_PUBLIC_URL')
+            : configService.get<string>('DATABASE_URL'),
+          entities: [User, Car, Route, WorkEntry, File],
+          synchronize: true,
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     UsersModule,
