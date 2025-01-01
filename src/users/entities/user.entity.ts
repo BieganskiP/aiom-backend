@@ -12,11 +12,13 @@ import { Exclude } from 'class-transformer';
 import { Car } from '../../cars/entities/car.entity';
 import { Route } from '../../routes/entities/route.entity';
 import { WorkEntry } from '../../work-entries/entities/work-entry.entity';
+import { Region } from '../../regions/entities/region.entity';
 
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
   OWNER = 'owner',
+  LEADER = 'leader',
 }
 
 @Entity('users')
@@ -114,4 +116,7 @@ export class User {
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   paidPerStop: number;
+
+  @OneToMany(() => Region, (region) => region.leader)
+  leadingRegions: Region[];
 }

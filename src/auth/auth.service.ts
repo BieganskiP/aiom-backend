@@ -54,6 +54,8 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
+      // Update last login time
+      await this.usersService.updateLastLogin(user.id);
       return user;
     }
     return null;
@@ -163,6 +165,9 @@ export class AuthService {
       invitationToken: null,
       invitationExpires: null,
     });
+
+    // Update last login time since this is their first login
+    await this.usersService.updateLastLogin(updatedUser.id);
 
     // Generate JWT token
     const payload = { sub: updatedUser.id, email: updatedUser.email };

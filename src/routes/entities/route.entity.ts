@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { WorkEntry } from '../../work-entries/entities/work-entry.entity';
+import { Region } from '../../regions/entities/region.entity';
 
 @Entity('routes')
 export class Route {
@@ -25,6 +26,9 @@ export class Route {
 
   @Column({ nullable: true })
   description: string;
+
+  @Column({ nullable: true })
+  regionId: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -45,6 +49,10 @@ export class Route {
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'updatedBy' })
   updatedByUser: User;
+
+  @ManyToOne(() => Region, (region) => region.routes, { nullable: true })
+  @JoinColumn({ name: 'regionId' })
+  region: Region;
 
   @OneToMany(() => WorkEntry, (workEntry) => workEntry.route)
   workEntries: WorkEntry[];

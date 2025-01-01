@@ -22,10 +22,25 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.usersRepository.find({
-      relations: ['car', 'route'],
-    });
+  async findAll(currentUser?: User): Promise<User[]> {
+    let users: User[];
+
+    if (currentUser?.role === UserRole.LEADER) {
+      // For leaders, only return users assigned to routes in their regions
+      const query = this.usersRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.car', 'car')
+        .leftJoinAndSelect('user.route', 'route')
+        .leftJoin('route.region', 'region')
+        .where('region.leaderId = :leaderId', { leaderId: currentUser.id });
+
+      users = await query.getMany();
+    } else {
+      // For admin and owner, return all users
+      users = await this.usersRepository.find({
+        relations: ['car', 'route'],
+      });
+    }
 
     // Clear car relation if carId is null
     users.forEach((user) => {
@@ -201,6 +216,16 @@ export class UsersService {
     }
 
     user.paidPerStop = paidPerStop;
+    return this.usersRepository.save(user);
+  }
+
+  async updateLastLogin(id: string): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.lastLogin = new Date();
     return this.usersRepository.save(user);
   }
 }

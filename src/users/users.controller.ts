@@ -30,9 +30,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @Roles(UserRole.ADMIN, UserRole.OWNER)
-  findAll() {
-    return this.usersService.findAll();
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.LEADER)
+  findAll(@Request() req) {
+    return this.usersService.findAll(req.user);
   }
 
   @Get(':id')
