@@ -22,10 +22,7 @@ import { Region } from './regions/entities/region.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const isDevelopment = process.env.NODE_ENV !== 'production';
-        const dbUrl = isDevelopment
-          ? configService.get<string>('DATABASE_PUBLIC_URL')
-          : configService.get<string>('DATABASE_URL');
+        const dbUrl = configService.get<string>('DATABASE_PUBLIC_URL');
 
         if (!dbUrl) {
           throw new Error(
@@ -33,6 +30,7 @@ import { Region } from './regions/entities/region.entity';
           );
         }
 
+        const isDevelopment = process.env.NODE_ENV !== 'production';
         return {
           type: 'postgres',
           url: dbUrl,
