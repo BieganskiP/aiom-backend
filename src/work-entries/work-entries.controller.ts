@@ -39,6 +39,10 @@ class GetWorkEntriesQueryDto {
   carId?: string;
 
   @IsOptional()
+  @IsString()
+  regionId?: string;
+
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   startDate?: Date;
@@ -65,10 +69,10 @@ export class WorkEntriesController {
   }
 
   @Get()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.LEADER)
   @UseGuards(RolesGuard)
-  findAll(@Query() query: GetWorkEntriesQueryDto) {
-    return this.workEntriesService.findAll(query);
+  findAll(@Query() query: GetWorkEntriesQueryDto, @Request() req) {
+    return this.workEntriesService.findAll(query, req.user);
   }
 
   @Patch(':id')
@@ -83,5 +87,12 @@ export class WorkEntriesController {
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
     return this.workEntriesService.remove(id, req.user.id);
+  }
+
+  @Get('financial-summary')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.LEADER)
+  @UseGuards(RolesGuard)
+  getFinancialSummary(@Query() query: GetWorkEntriesQueryDto, @Request() req) {
+    return this.workEntriesService.getFinancialSummary(query, req.user);
   }
 }

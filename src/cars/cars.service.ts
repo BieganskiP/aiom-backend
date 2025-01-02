@@ -52,10 +52,29 @@ export class CarsService {
     userId: string,
   ): Promise<Car> {
     const car = await this.findOne(id);
-    Object.assign(car, {
+
+    // Clean up date fields
+    const cleanedDto = {
       ...updateCarDto,
+      checkupDate:
+        updateCarDto.checkupDate === '' ? null : updateCarDto.checkupDate,
+      oilChangeDate:
+        updateCarDto.oilChangeDate === '' ? null : updateCarDto.oilChangeDate,
+      tiresChangeDate:
+        updateCarDto.tiresChangeDate === ''
+          ? null
+          : updateCarDto.tiresChangeDate,
+      brakesChangeDate:
+        updateCarDto.brakesChangeDate === ''
+          ? null
+          : updateCarDto.brakesChangeDate,
+    };
+
+    Object.assign(car, {
+      ...cleanedDto,
       updatedBy: userId,
     });
+
     return this.carsRepository.save(car);
   }
 
