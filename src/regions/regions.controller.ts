@@ -100,4 +100,19 @@ export class RegionsController {
     }
     return this.regionsService.getRoutes(id);
   }
+
+  @Post(':id/leader')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async assignLeader(
+    @Param('id') id: string,
+    @Body() body: { leaderId: string },
+  ) {
+    return this.regionsService.assignLeader(id, body.leaderId);
+  }
+
+  @Delete(':id/leader')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async removeLeader(@Param('id') id: string) {
+    return this.regionsService.removeLeader(id);
+  }
 }

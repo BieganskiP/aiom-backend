@@ -31,14 +31,14 @@ export class RoutesService {
 
   async findAll(): Promise<Route[]> {
     return this.routesRepository.find({
-      relations: ['assignedUser', 'updatedByUser'],
+      relations: ['assignedUser', 'updatedByUser', 'region'],
     });
   }
 
   async findOne(id: string): Promise<Route> {
     const route = await this.routesRepository.findOne({
       where: { id },
-      relations: ['assignedUser', 'updatedByUser'],
+      relations: ['assignedUser', 'updatedByUser', 'region'],
     });
     if (!route) {
       throw new NotFoundException('Route not found');
