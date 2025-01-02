@@ -69,4 +69,35 @@ export class RegionsController {
   remove(@Param('id') id: string) {
     return this.regionsService.remove(id);
   }
+
+  @Post(':id/routes')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async addRoutes(
+    @Param('id') id: string,
+    @Body() body: { routeIds: string[] },
+  ) {
+    return this.regionsService.addRoutes(id, body.routeIds);
+  }
+
+  @Delete(':id/routes/:routeId')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async removeRoute(
+    @Param('id') id: string,
+    @Param('routeId') routeId: string,
+  ) {
+    return this.regionsService.removeRoute(id, routeId);
+  }
+
+  @Get(':id/routes')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.LEADER)
+  async getRoutes(@Param('id') id: string, @Request() req) {
+    if (req.user.role === UserRole.LEADER) {
+      const regions = await this.regionsService.findByLeader(req.user.id);
+      const region = regions.find((r) => r.id === id);
+      if (!region) {
+        throw new NotFoundException('Region not found or access denied');
+      }
+    }
+    return this.regionsService.getRoutes(id);
+  }
 }
