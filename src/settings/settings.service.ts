@@ -4,13 +4,20 @@ import { Repository } from 'typeorm';
 import { Setting, SettingKey } from './entities/setting.entity';
 
 const DEFAULT_SETTINGS = {
-  [SettingKey.COMPANY_RATE_PER_STOP]: 3.5,
-  [SettingKey.COMPANY_CAR_RATE]: 6.0,
+  [SettingKey.COMPANY_RATE_PER_STOP]: '3.5',
+  [SettingKey.COMPANY_CAR_RATE]: '6.0',
+  [SettingKey.PARENT_COMPANY_DISPLAY_NAME]: 'Parent Company',
+  [SettingKey.OWN_COMPANY_DISPLAY_NAME]: 'Own Company',
 };
+
+const NUMERIC_SETTINGS = [
+  SettingKey.COMPANY_RATE_PER_STOP,
+  SettingKey.COMPANY_CAR_RATE,
+];
 
 @Injectable()
 export class SettingsService {
-  private settingsCache: Map<string, number> = new Map();
+  private settingsCache: Map<string, string> = new Map();
 
   constructor(
     @InjectRepository(Setting)
@@ -26,11 +33,12 @@ export class SettingsService {
         where: { key: key as SettingKey },
       });
       if (!setting) {
-        await this.settingsRepository.save({
+        const newSetting = this.settingsRepository.create({
           key: key as SettingKey,
-          value,
           description: `Default value for ${key}`,
         });
+        newSetting.value = value;
+        await this.settingsRepository.save(newSetting);
       }
     }
     await this.refreshCache();
@@ -40,18 +48,24 @@ export class SettingsService {
     const settings = await this.settingsRepository.find();
     this.settingsCache.clear();
     settings.forEach((setting) => {
-      this.settingsCache.set(setting.key, Number(setting.value));
+      this.settingsCache.set(setting.key, setting.value);
     });
   }
 
-  async getValue(key: SettingKey): Promise<number> {
+  async getValue(key: SettingKey): Promise<number | string> {
     if (!this.settingsCache.has(key)) {
       await this.refreshCache();
     }
-    return this.settingsCache.get(key) || DEFAULT_SETTINGS[key];
+    const value = this.settingsCache.get(key) || DEFAULT_SETTINGS[key];
+    return NUMERIC_SETTINGS.includes(key) ? Number(value) : value;
   }
 
-  async updateValue(key: SettingKey, value: number): Promise<Setting> {
+  async getNumericValue(key: SettingKey): Promise<number> {
+    const value = await this.getValue(key);
+    return Number(value);
+  }
+
+  async updateValue(key: SettingKey, value: string | number): Promise<Setting> {
     const setting = await this.settingsRepository.findOne({
       where: { key },
     });
@@ -59,9 +73,7 @@ export class SettingsService {
       throw new NotFoundException(`Setting ${key} not found`);
     }
 
-    // Convert to number with 2 decimal places
-    setting.value = Number(Number(value).toFixed(2));
-
+    setting.value = String(value);
     const updated = await this.settingsRepository.save(setting);
     await this.refreshCache();
     return updated;

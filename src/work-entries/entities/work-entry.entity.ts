@@ -70,10 +70,10 @@ export class WorkEntry {
       throw new Error('Settings service not initialized');
     }
 
-    const companyRatePerStop = await WorkEntry.settingsService.getValue(
+    const companyRatePerStop = await WorkEntry.settingsService.getNumericValue(
       SettingKey.COMPANY_RATE_PER_STOP,
     );
-    const companyCarRate = await WorkEntry.settingsService.getValue(
+    const companyCarRate = await WorkEntry.settingsService.getNumericValue(
       SettingKey.COMPANY_CAR_RATE,
     );
 
