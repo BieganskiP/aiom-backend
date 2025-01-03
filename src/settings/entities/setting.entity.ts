@@ -13,6 +13,11 @@ export enum SettingKey {
   OWN_COMPANY_DISPLAY_NAME = 'own_company_display_name',
 }
 
+const NUMERIC_SETTINGS = [
+  SettingKey.COMPANY_RATE_PER_STOP,
+  SettingKey.COMPANY_CAR_RATE,
+];
+
 @Entity('settings')
 export class Setting {
   @PrimaryGeneratedColumn('uuid')
@@ -45,8 +50,11 @@ export class Setting {
   }
 
   set value(val: string) {
-    const numVal = Number(val);
-    if (!isNaN(numVal)) {
+    if (NUMERIC_SETTINGS.includes(this.key)) {
+      const numVal = Number(val);
+      if (isNaN(numVal)) {
+        throw new Error(`Setting ${this.key} requires a numeric value`);
+      }
       this.numericValue = numVal;
       this.textValue = null;
     } else {
