@@ -13,8 +13,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { UserRole } from '../users/entities/user.entity';
 import { SettingKey } from './entities/setting.entity';
-import { IsString, IsNotEmpty } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsNotEmpty } from 'class-validator';
 
 const NUMERIC_SETTINGS = [
   SettingKey.COMPANY_RATE_PER_STOP,
