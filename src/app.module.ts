@@ -17,6 +17,8 @@ import { RegionsModule } from './regions/regions.module';
 import { Region } from './regions/entities/region.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
+import { RoutesListsModule } from './routes-lists/routes-lists.module';
+import { RouteList } from './routes-lists/entities/route-list.entity';
 
 @Module({
   imports: [
@@ -36,7 +38,16 @@ import { Setting } from './settings/entities/setting.entity';
         return {
           type: 'postgres',
           url: dbUrl,
-          entities: [User, Car, Route, WorkEntry, File, Region, Setting],
+          entities: [
+            User,
+            Car,
+            Route,
+            WorkEntry,
+            File,
+            Region,
+            Setting,
+            RouteList,
+          ],
           synchronize: true,
           ssl: isDevelopment
             ? false
@@ -60,6 +71,7 @@ import { Setting } from './settings/entities/setting.entity';
     FilesModule,
     RegionsModule,
     SettingsModule,
+    RoutesListsModule,
   ],
 })
 export class AppModule {}
