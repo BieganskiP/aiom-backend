@@ -19,6 +19,8 @@ import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
 import { RoutesListsModule } from './routes-lists/routes-lists.module';
 import { RouteList } from './routes-lists/entities/route-list.entity';
+import { EventsModule } from './events/events.module';
+import { Event } from './events/entities/event.entity';
 
 @Module({
   imports: [
@@ -47,6 +49,7 @@ import { RouteList } from './routes-lists/entities/route-list.entity';
             Region,
             Setting,
             RouteList,
+            Event,
           ],
           synchronize: true,
           ssl: isDevelopment
@@ -72,6 +75,7 @@ import { RouteList } from './routes-lists/entities/route-list.entity';
     RegionsModule,
     SettingsModule,
     RoutesListsModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
