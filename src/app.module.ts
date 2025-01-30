@@ -21,6 +21,8 @@ import { RoutesListsModule } from './routes-lists/routes-lists.module';
 import { RouteList } from './routes-lists/entities/route-list.entity';
 import { EventsModule } from './events/events.module';
 import { Event } from './events/entities/event.entity';
+import { ComplaintsModule } from './complaints/complaints.module';
+import { Complaint } from './complaints/entities/complaint.entity';
 
 @Module({
   imports: [
@@ -50,6 +52,7 @@ import { Event } from './events/entities/event.entity';
             Setting,
             RouteList,
             Event,
+            Complaint,
           ],
           synchronize: true,
           ssl: isDevelopment
@@ -76,6 +79,7 @@ import { Event } from './events/entities/event.entity';
     SettingsModule,
     RoutesListsModule,
     EventsModule,
+    ComplaintsModule,
   ],
 })
 export class AppModule {}
