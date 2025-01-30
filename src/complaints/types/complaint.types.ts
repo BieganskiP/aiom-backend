@@ -22,7 +22,10 @@ export interface ComplaintStats {
   byStatus: {
     [key in ComplaintStatus]: number;
   };
-  averageCompensation: number;
+  totalCompensation: number;
+  compensationByStatus: {
+    [key in ComplaintStatus]: number;
+  };
   period: {
     year?: number;
     month?: number;

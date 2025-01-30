@@ -74,6 +74,12 @@ export class ComplaintsController {
     return this.complaintsService.findAll(findComplaintsDto);
   }
 
+  @Get('stats')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.LEADER)
+  getStats(@Query() getStatsDto: GetStatsDto): Promise<ComplaintStats> {
+    return this.complaintsService.getStats(getStatsDto);
+  }
+
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.LEADER)
   findOne(@Param('id') id: string) {
@@ -99,11 +105,5 @@ export class ComplaintsController {
   @Roles(UserRole.ADMIN, UserRole.OWNER)
   remove(@Param('id') id: string) {
     return this.complaintsService.remove(+id);
-  }
-
-  @Get('stats')
-  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.LEADER)
-  getStats(@Query() getStatsDto: GetStatsDto): Promise<ComplaintStats> {
-    return this.complaintsService.getStats(getStatsDto);
   }
 }

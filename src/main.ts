@@ -41,8 +41,30 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   // Use PORT from environment variables (Railway sets this automatically)
-  const port = process.env.PORT || 3001;
-  await app.listen(port);
-  console.log(`Application is running on port ${port}`);
+  const preferredPort = parseInt(process.env.PORT || '3001', 10);
+  const maxRetries = 5;
+  let currentPort = preferredPort;
+  let started = false;
+
+  for (let attempt = 0; attempt < maxRetries && !started; attempt++) {
+    try {
+      await app.listen(currentPort);
+      started = true;
+      console.log(`Application is running on port ${currentPort}`);
+    } catch (error) {
+      if (error.code === 'EADDRINUSE') {
+        console.log(
+          `Port ${currentPort} is in use, trying ${currentPort + 1}...`,
+        );
+        currentPort++;
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  if (!started) {
+    throw new Error(`Could not start server after ${maxRetries} attempts`);
+  }
 }
 bootstrap();

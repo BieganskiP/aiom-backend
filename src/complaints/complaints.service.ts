@@ -307,8 +307,8 @@ export class ComplaintsService {
     // Get total count
     const total = await query.getCount();
 
-    // Get counts by status
-    const statusCounts = await Promise.all(
+    // Get counts and compensation by status
+    const statusStats = await Promise.all(
       Object.values(ComplaintStatus).map(async (statusValue) => {
         const statusQuery = this.complaintRepository
           .createQueryBuilder('complaint')
@@ -328,18 +328,36 @@ export class ComplaintsService {
         }
 
         const count = await statusQuery.getCount();
-        return { status: statusValue, count };
+
+        // Get compensation sum for this status
+        const compensationResult = await statusQuery
+          .select('SUM(complaint.compensation_value)', 'total')
+          .getRawOne();
+
+        return {
+          status: statusValue,
+          count,
+          compensation: Number(compensationResult?.total || 0),
+        };
       }),
     );
 
-    // Get average compensation
-    const avgResult = await query
-      .select('AVG(complaint.compensation_value)', 'average')
+    // Get total compensation
+    const sumResult = await query
+      .select('SUM(complaint.compensation_value)', 'total')
       .getRawOne();
 
-    const byStatus = statusCounts.reduce(
+    const byStatus = statusStats.reduce(
       (acc, { status, count }) => {
         acc[status] = count;
+        return acc;
+      },
+      {} as { [key in ComplaintStatus]: number },
+    );
+
+    const compensationByStatus = statusStats.reduce(
+      (acc, { status, compensation }) => {
+        acc[status] = compensation;
         return acc;
       },
       {} as { [key in ComplaintStatus]: number },
@@ -348,7 +366,8 @@ export class ComplaintsService {
     return {
       total,
       byStatus,
-      averageCompensation: Number(avgResult?.average || 0),
+      totalCompensation: Number(sumResult?.total || 0),
+      compensationByStatus,
       period: {
         year: year ? Math.floor(year) : undefined,
         month: month ? Math.floor(month) : undefined,
