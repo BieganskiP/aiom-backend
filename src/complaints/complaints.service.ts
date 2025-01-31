@@ -275,7 +275,7 @@ export class ComplaintsService {
   }
 
   async getStats(params: GetStatsDto): Promise<ComplaintStats> {
-    const { year, month, status } = params;
+    const { year, month, status, userId } = params;
 
     // Validate numeric parameters
     if (year && (isNaN(year) || year < 1900 || year > 9999)) {
@@ -303,6 +303,9 @@ export class ComplaintsService {
     if (status) {
       query.andWhere('complaint.status = :status', { status });
     }
+    if (userId) {
+      query.andWhere('complaint.userId = :userId', { userId });
+    }
 
     // Get total count
     const total = await query.getCount();
@@ -325,6 +328,9 @@ export class ComplaintsService {
             'EXTRACT(MONTH FROM complaint.delivery_date) = :month',
             { month: Math.floor(month) },
           );
+        }
+        if (userId) {
+          statusQuery.andWhere('complaint.userId = :userId', { userId });
         }
 
         const count = await statusQuery.getCount();

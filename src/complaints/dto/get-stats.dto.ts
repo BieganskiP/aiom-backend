@@ -1,4 +1,4 @@
-import { IsOptional, IsNumber, IsEnum } from 'class-validator';
+import { IsOptional, IsNumber, IsEnum, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ComplaintStatus } from '../enums/complaint-status.enum';
 
@@ -16,4 +16,8 @@ export class GetStatsDto {
   @IsOptional()
   @IsEnum(ComplaintStatus)
   status?: ComplaintStatus;
-} 
+
+  @IsOptional()
+  @IsString()
+  userId?: string;
+}
