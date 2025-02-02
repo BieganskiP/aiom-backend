@@ -97,3 +97,413 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# All-in-One Manager API Documentation
+
+This document provides comprehensive documentation for all API endpoints in the All-in-One Manager backend application.
+
+## Authentication Endpoints
+
+Base path: `/auth`
+
+### POST /auth/signup
+
+Create a new user account.
+
+- Body: `CreateUserDto`
+  - email: string
+  - password: string
+  - firstName: string
+  - lastName: string
+- Returns: User object and sets JWT cookie
+
+### POST /auth/login
+
+Authenticate user and get access token.
+
+- Body:
+  - email: string
+  - password: string
+- Returns: Access token and user details, sets JWT cookie
+
+### POST /auth/logout
+
+Logout user and clear authentication cookie.
+
+- Returns: Success message
+
+### GET /auth/profile
+
+Get current user's profile (requires authentication).
+
+- Returns: User profile details
+
+### POST /auth/invite
+
+Create invitation for new user (requires ADMIN role).
+
+- Body:
+  - email: string
+- Returns: Invitation details
+
+### POST /auth/reset-password-request
+
+Request password reset.
+
+- Body:
+  - email: string
+- Returns: Success message
+
+### POST /auth/reset-password
+
+Reset password using token.
+
+- Body:
+  - token: string
+  - password: string
+- Returns: Success message
+
+### POST /auth/validate-invitation
+
+Validate invitation token.
+
+- Body:
+  - token: string
+- Returns: Invitation validation status
+
+### POST /auth/complete-registration
+
+Complete registration process with invitation.
+
+- Body: CompleteRegistrationDto
+- Returns: Access token and user details
+
+## Files Endpoints
+
+Base path: `/files`
+
+### POST /files/upload/image
+
+Upload an image file (max 5MB, jpg/jpeg/png).
+
+- Body: Form data with 'file' field
+- Returns: Uploaded file details
+
+### POST /files/upload/pdf
+
+Upload a PDF file (max 10MB).
+
+- Body: Form data with 'file' field
+- Returns: Uploaded file details
+
+### GET /files
+
+Get all files.
+
+- Returns: Array of file objects
+
+### GET /files/:id
+
+Get file by ID.
+
+- Returns: File details
+
+### GET /files/:id/download
+
+Download file by ID.
+
+- Returns: File stream
+
+### DELETE /files/:id
+
+Delete file by ID.
+
+- Returns: Success message
+
+## Cars Endpoints
+
+Base path: `/cars`
+
+### POST /cars
+
+Create new car (requires ADMIN role).
+
+- Body: CreateCarDto
+- Returns: Created car object
+
+### GET /cars
+
+Get all cars.
+
+- Returns: Array of car objects
+
+### GET /cars/:id
+
+Get car by ID.
+
+- Returns: Car details
+
+### PATCH /cars/:id
+
+Update car details (requires ADMIN role).
+
+- Body: UpdateCarDto
+- Returns: Updated car object
+
+### PATCH /cars/:id/assign
+
+Assign car to user/route (requires ADMIN role).
+
+- Body: AssignCarDto
+- Returns: Updated car object
+
+### POST /cars/:id/unassign
+
+Unassign car (requires ADMIN role).
+
+- Returns: Updated car object
+
+### DELETE /cars/:id/soft
+
+Soft delete car (requires ADMIN role).
+
+- Returns: Success message
+
+### DELETE /cars/:id
+
+Hard delete car (requires ADMIN role).
+
+- Returns: Success message
+
+### PATCH /cars/:id/status
+
+Update car status (requires ADMIN role).
+
+- Body: UpdateCarStatusDto
+- Returns: Updated car object
+
+## Routes Endpoints
+
+Base path: `/routes`
+
+### POST /routes
+
+Create new route (requires ADMIN role).
+
+- Body: CreateRouteDto
+- Returns: Created route object
+
+### GET /routes
+
+Get all routes.
+
+- Returns: Array of route objects
+
+### GET /routes/:id
+
+Get route by ID.
+
+- Returns: Route details
+
+### PATCH /routes/:id
+
+Update route (requires ADMIN role).
+
+- Body: UpdateRouteDto
+- Returns: Updated route object
+
+### PATCH /routes/:id/assign
+
+Assign route (requires ADMIN role).
+
+- Body: AssignRouteDto
+- Returns: Updated route object
+
+### POST /routes/:id/unassign
+
+Unassign route (requires ADMIN role).
+
+- Returns: Updated route object
+
+### DELETE /routes/:id/soft
+
+Soft delete route (requires ADMIN role).
+
+- Returns: Success message
+
+### DELETE /routes/:id
+
+Hard delete route (requires ADMIN role).
+
+- Returns: Success message
+
+## Work Entries Endpoints
+
+Base path: `/work-entries`
+
+### POST /work-entries
+
+Create new work entry.
+
+- Body: CreateWorkEntryDto
+- Returns: Created work entry object
+
+### GET /work-entries/my-entries
+
+Get current user's work entries.
+
+- Query Parameters:
+  - month?: Date
+  - userId?: string
+  - routeId?: string
+  - carId?: string
+  - regionId?: string
+  - startDate?: Date
+  - endDate?: Date
+- Returns: Array of work entries
+
+### GET /work-entries
+
+Get all work entries (requires ADMIN/OWNER/LEADER role).
+
+- Query Parameters: Same as /my-entries
+- Returns: Array of work entries
+
+### PATCH /work-entries/:id
+
+Update work entry.
+
+- Body: UpdateWorkEntryDto
+- Returns: Updated work entry object
+
+### DELETE /work-entries/:id
+
+Delete work entry.
+
+- Returns: Success message
+
+### GET /work-entries/financial-summary
+
+Get financial summary (requires ADMIN/OWNER/LEADER role).
+
+- Query Parameters: Same as /my-entries
+- Returns: Financial summary data
+
+## Regions Endpoints
+
+Base path: `/regions`
+
+### POST /regions
+
+Create new region (requires ADMIN/OWNER role).
+
+- Body: CreateRegionDto
+- Returns: Created region object
+
+### GET /regions
+
+Get all regions.
+
+- Returns: Array of region objects
+
+### GET /regions/:id
+
+Get region by ID.
+
+- Returns: Region details
+
+### PATCH /regions/:id
+
+Update region (requires ADMIN/OWNER role).
+
+- Body: UpdateRegionDto
+- Returns: Updated region object
+
+### DELETE /regions/:id
+
+Delete region (requires ADMIN/OWNER role).
+
+- Returns: Success message
+
+### POST /regions/:id/routes
+
+Add routes to region (requires ADMIN/OWNER role).
+
+- Body:
+  - routeIds: string[]
+- Returns: Updated region object
+
+### DELETE /regions/:id/routes/:routeId
+
+Remove route from region (requires ADMIN/OWNER role).
+
+- Returns: Updated region object
+
+### GET /regions/:id/routes
+
+Get routes in region (requires ADMIN/OWNER/LEADER role).
+
+- Returns: Array of routes
+
+## Complaints Endpoints
+
+Base path: `/complaints`
+
+### GET /complaints
+
+Get all complaints (requires ADMIN/OWNER/LEADER role).
+
+- Query Parameters: FindComplaintsDto
+- Returns: Array of complaints
+
+### GET /complaints/stats
+
+Get complaints statistics (requires ADMIN/OWNER/LEADER role).
+
+- Query Parameters: GetStatsDto
+- Returns: Complaints statistics
+
+### GET /complaints/:id
+
+Get complaint by ID (requires ADMIN/OWNER/LEADER role).
+
+- Returns: Complaint details
+
+### PATCH /complaints/:id/assign/:userId
+
+Assign complaint to user (requires ADMIN/OWNER role).
+
+- Returns: Updated complaint object
+
+### PATCH /complaints/:id/status
+
+Update complaint status (requires ADMIN/OWNER role).
+
+- Body: UpdateComplaintStatusDto
+- Returns: Updated complaint object
+
+### DELETE /complaints/:id
+
+Delete complaint (requires ADMIN/OWNER role).
+
+- Returns: Success message
+
+## Authentication and Authorization
+
+Most endpoints require authentication using JWT tokens. The token is automatically handled through HTTP-only cookies set during login/signup.
+
+### User Roles
+
+- ADMIN: Full access to all endpoints
+- OWNER: Access to most management endpoints
+- LEADER: Limited access to view and manage assigned regions
+- USER: Basic access to personal endpoints
+
+### Security Features
+
+- JWT-based authentication
+- Role-based access control
+- HTTP-only cookies for token storage
+- Secure password handling
+- Input validation
+- Rate limiting (if configured)
