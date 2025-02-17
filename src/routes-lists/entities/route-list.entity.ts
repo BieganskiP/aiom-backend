@@ -11,9 +11,9 @@ export class RouteList {
   @Column('int4')
   number_of_packages: number;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   route: string;
 
-  @Column('timestamp')
+  @Column('timestamp', { nullable: true })
   date: Date;
 }
